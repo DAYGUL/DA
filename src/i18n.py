@@ -79,6 +79,14 @@ _T: dict[str, tuple[str, str]] = {
     "Eigen və çəkilər": ("Собственный вектор и веса", "Eigen & weights"),
     "Həssaslıq": ("Чувствительность", "Sensitivity"),
     "İxrac": ("Экспорт", "Export"),
+    "Mənbələr": ("Источники", "Sources"),
+    "Düsturların mənbələri": ("Источники формул", "Sources of the formulas"),
+    "Proqramdakı hər düsturun hansı mənbədən götürüldüyü. [n] dissertasiyanın ədəbiyyat siyahısındakı nömrədir.":
+        ("Из какого источника взята каждая формула программы. [n] — номер в списке литературы диссертации.",
+         "Which source every formula of the program comes from. [n] is the number in the dissertation's reference list."),
+    "Jurnal məqalələri üçün məqalənin səhifə aralığı verilib; kitablar üçün səhifə hələ dəqiqləşdirilməyib.":
+        ("Для журнальных статей указан диапазон страниц статьи; для книг страницы ещё не уточнены.",
+         "For journal articles the page range of the article is given; for books the pages are still to be checked."),
     # ---------------------------------------------------------------- sidebar
     "Nümunə məlumat (dissertasiya)": ("Пример данных (диссертация)", "Sample data (dissertation)"),
     "Mənbə: {s}": ("Источник: {s}", "Source: {s}"),

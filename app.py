@@ -380,7 +380,7 @@ st.markdown(
 kpi_box = st.container()
 
 tabs = st.tabs([t("Məlumat"), t("Konsistentlik"), t("Eigen və çəkilər"), "TOPSIS", t("Həssaslıq"), "IT2-SMAA",
-                "Rank reversal", t("İxrac")])
+                "Rank reversal", t("İxrac"), t("Mənbələr")])
 
 # ================================================================== 0. data
 with tabs[0]:
@@ -902,6 +902,14 @@ with tabs[7]:
                        "input_matrices.xlsx", width="stretch")
     c2.download_button("⬇  " + t("Cüt-cüt matris (CSV)"), to_text(pw_t, ";"), "pairwise.csv", width="stretch")
     c3.download_button("⬇  " + t("Qərar matrisi (CSV)"), to_text(dm_t, ";"), "decision.csv", width="stretch")
+
+# ================================================================== 8. sources
+with tabs[8]:
+    import references as refs_mod
+    section(t("Düsturların mənbələri"),
+            t("Proqramdakı hər düsturun hansı mənbədən götürüldüyü. [n] dissertasiyanın ədəbiyyat siyahısındakı nömrədir."))
+    st.dataframe(refs_mod.table(LANG), width="stretch", hide_index=True)
+    st.caption(t("Jurnal məqalələri üçün məqalənin səhifə aralığı verilib; kitablar üçün səhifə hələ dəqiqləşdirilməyib."))
 
 # ---------------------------------------------------------------- footer
 st.markdown(f'<div class="app-footer"><span>{t("İkinci tip qeyri-səlis AHP + TOPSIS")} · '
