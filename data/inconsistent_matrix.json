@@ -1,0 +1,26 @@
+{
+  "description": "Ilkin 6x6 IT2 trapezoidal uygunsuz cut-cut muqayise matrisi. Menbe: 'INCONSISTENT MATRIX PAIRWISE.docx' ",
+  "corrections": [
+    "C1-C2: (0.2,0.3,0.5,1)/(0.2,0.3,0.5,0.8) -> standart invYx (yazi sehvi kimi qebul edildi)",
+    "C5-C6: (0.3,0.3,0.2,0.1)/(0.3,0.2,0.2,0.1) etibarsiz idi -> C6-C5-in deqiq tersi 1/(5,6,8,8)/(5.2,6,7.8,8)",
+    "C2-C5 / C5-C2 ve diger reciprocity pozuntulari saxlanilib: konsistent matris alqoritmi aradan qaldiracaq"
+  ],
+  "criteria": ["C1", "C2", "C3", "C4", "C5", "C6"],
+  "heights": {"upper": 1.0, "lower": 0.8},
+  "terms": {
+    "E":     {"U": [1, 1, 1, 1],          "L": [1, 1, 1, 1]},
+    "Yx":    {"U": [1, 2, 4, 5],          "L": [1.4, 2.2, 3.8, 4.8]},
+    "O":     {"U": [3, 4, 6, 7],          "L": [3.4, 4.2, 6, 6.8]},
+    "Y":     {"U": [5, 6, 8, 8],          "L": [5.2, 6.7, 8, 8]},
+    "CY":    {"U": [7, 8, 9, 9],          "L": [7.2, 8.2, 8.8, 9]},
+    "invYx": {"U": [0.2, 0.25, 0.5, 1],   "L": [0.2, 0.26, 0.45, 0.7]}
+  },
+  "matrix": [
+    ["E",  "invYx", "invYx", "invYx", "invYx", "invYx"],
+    ["Yx", "E",     "invYx", "invYx", "invYx", "invYx"],
+    ["O",  "O",     "E",     "E",     "Yx",    "E"],
+    ["O",  "O",     "Yx",    "E",     "O",     "invYx"],
+    ["O",  "invYx", "E",     "E",     "E",     {"U": [0.125, 0.125, 0.1667, 0.2], "L": [0.125, 0.1282, 0.1667, 0.1923]}],
+    ["O",  "O",     "O",     "O",     {"U": [5, 6, 8, 8], "L": [5.2, 6, 7.8, 8]}, "E"]
+  ]
+}
