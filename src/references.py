@@ -42,7 +42,7 @@ ROWS = [
      "Лингвистическая шкала и оценки экспертов (3 эксперта)",
      "AS, VS, FS, SS, E → IT2TrFN", [33], "orig", "oztaysi2015.py"),
     ("Ekspert qiymətlərinin aqreqasiyası", "Aggregation of the expert judgements", "Агрегирование оценок экспертов",
-     "ãᵢⱼ = (ãᵢⱼ¹ ⊗ ãᵢⱼ² ⊗ ãᵢⱼ³)^{1/3}", [33, 5], "orig", "oztaysi2015.aggregate"),
+     "ãᵢⱼ = ⊗ₚ (ãᵢⱼᵖ)^{λₚ},  λₚ = (1/CRₚ) / Σ_q (1/CR_q)", [33, 5], "adapt", "oztaysi2015.aggregate"),
     ("Alternativlərin yerli prioritetləri", "Local priorities of the alternatives", "Локальные приоритеты альтернатив",
      "p̃ᵢ⁽ʲ⁾ = r̃ᵢ⁽ʲ⁾ ⊘ Σₖ r̃ₖ⁽ʲ⁾,  r̃ᵢ⁽ʲ⁾ from Ã*⁽ʲ⁾", [5, 33], "adapt", "oztaysi2015.py"),
     ("Simmetrikləşdirmə", "Symmetrisation", "Симметризация",
