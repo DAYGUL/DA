@@ -88,7 +88,7 @@ _T: dict[str, tuple[str, str]] = {
         ("Для журнальных статей указан диапазон страниц статьи; для книг страницы ещё не уточнены.",
          "For journal articles the page range of the article is given; for books the pages are still to be checked."),
     # ---------------------------------------------------------------- sidebar
-    "Nümunə məlumat: Öztayşi (2015), 3 ekspert": ("Пример данных: Öztayşi (2015), 3 эксперта", "Sample data: Öztayşi (2015), 3 experts"),
+    "Nümunə məlumat (dissertasiya)": ("Пример данных (диссертация)", "Sample data (dissertation)"),
     "Mənbə: {s}": ("Источник: {s}", "Source: {s}"),
     "Metod": ("Метод", "Method"),
     "Qeyri-səlis ədəd tipi": ("Тип нечёткого числа", "Fuzzy number type"),

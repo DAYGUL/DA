@@ -333,7 +333,7 @@ with st.sidebar:
     if st.session_state.get("lang_sel") is None:      # segmented control can be deselected
         st.session_state.lang_sel = LANG
         st.rerun()
-    src_name = t("Nümunə məlumat: Öztayşi (2015), 3 ekspert") if st.session_state.source == SAMPLE else st.session_state.source
+    src_name = t("Nümunə məlumat (dissertasiya)") if st.session_state.source == SAMPLE else st.session_state.source
     st.caption(t("Mənbə: {s}", s=src_name))
 
     st.markdown(f'<div class="sb-sec" lang="{HL}">{t("Metod")}</div>', unsafe_allow_html=True)
