@@ -393,6 +393,78 @@ _T: dict[str, tuple[str, str]] = {
     "Ən yaxşı alternativ": ("Лучшая альтернатива", "Best alternative"),
     "SMAA · P(1-ci yer)": ("SMAA · P(1-е место)", "SMAA · P(rank 1)"),
     "{a} üçün": ("для {a}", "for {a}"),
+    # ---------------------------------------------------------------- dependency tab
+    "Asılılıq": ("Зависимость", "Dependency"),
+    "Meyarlar arasındakı asılılıq": ("Зависимость между критериями", "Dependency between the criteria"),
+    "Hər meyar cütü üçün əlaqə dərəcəsi linqvistik verilir və korrelyasiya intervalına çevrilir. "
+    "IT2 TOPSIS məsafəsi təpə-təpə Mahalanobis formasında hesablanır; R = I olduqda adi IT2 TOPSIS alınır.":
+        ("Степень связи каждой пары критериев задаётся лингвистически и переводится в интервал корреляции. "
+         "Расстояние IT2 TOPSIS вычисляется по вершинам в форме Махаланобиса; при R = I получается обычный IT2 TOPSIS.",
+         "The degree of relationship of every pair of criteria is given linguistically and mapped to a correlation "
+         "interval. The IT2 TOPSIS distance is computed vertex-wise in Mahalanobis form; R = I gives the standard IT2 TOPSIS."),
+    "Çox güclü": ("Очень сильная", "Very strong"),
+    "Güclü": ("Сильная", "Strong"),
+    "Orta": ("Средняя", "Moderate"),
+    "Ortadan zəif": ("Ниже средней", "Less than moderate"),
+    "Zəif": ("Слабая", "Weak"),
+    "Yoxdur": ("Нет", "None"),
+    "müsbət (+)": ("положительная (+)", "positive (+)"),
+    "mənfi (−), qarşılıqlı əvəzləmə": ("отрицательная (−), компромисс", "negative (−), trade-off"),
+    "Cüt": ("Пара", "Pair"),
+    "Əlaqə dərəcəsi": ("Степень связи", "Degree of relationship"),
+    "İstiqamət": ("Направление", "Direction"),
+    "Meyar cütləri arasındakı əlaqələr": ("Связи между парами критериев", "Relationships between pairs of criteria"),
+    "redaktə oluna bilər": ("можно редактировать", "editable"),
+    "Linqvistik dərəcələr və korrelyasiya intervalları": ("Лингвистические степени и интервалы корреляции",
+                                                          "Linguistic degrees and correlation intervals"),
+    "Aşağı": ("Нижняя", "Lower"),
+    "Nüvə": ("Ядро", "Core"),
+    "Yuxarı": ("Верхняя", "Upper"),
+    "aşağı": ("нижняя", "lower"),
+    "nüvə": ("ядро", "core"),
+    "yuxarı": ("верхняя", "upper"),
+    "Normallaşdırmadan sonra bütün meyarlar \"böyük = yaxşı\" istiqamətindədir (xərc meyarında "
+    "böyük = ucuz). Mənfi əlaqə qarşılıqlı əvəzləmə deməkdir: keyfiyyətli layihə adətən bahalıdır.":
+        ("После нормализации все критерии имеют направление «больше = лучше» (для критерия затрат больше = дешевле). "
+         "Отрицательная связь означает компромисс: качественный проект обычно дороже.",
+         "After normalisation every criterion is \"larger = better\" (for the cost criterion larger = cheaper). "
+         "A negative relationship is a trade-off: a high-quality project is usually more expensive."),
+    "Əlaqə matrisi R müsbət müəyyən deyil ({b}). Əlaqələr bir-biri ilə uyğun gəlmir — bəzi dərəcələri zəiflədin.":
+        ("Матрица связей R не положительно определена ({b}). Связи несовместимы — ослабьте некоторые степени.",
+         "The relationship matrix R is not positive definite ({b}). The relationships are incompatible — weaken some degrees."),
+    "Müstəqil meyarlar": ("Независимые критерии", "Independent criteria"),
+    "Asılı meyarlar": ("Зависимые критерии", "Dependent criteria"),
+    "nüvə R": ("R ядра", "core R"),
+    "aşağı R": ("нижняя R", "lower R"),
+    "yuxarı R": ("верхняя R", "upper R"),
+    "dəyişmir": ("не меняется", "unchanged"),
+    "bütün intervallar üzrə": ("по всем интервалам", "over all intervals"),
+    "müstəqil: {x}": ("независимые: {x}", "independent: {x}"),
+    "Ən asılı meyar": ("Наиболее зависимый критерий", "Most dependent criterion"),
+    "Əlaqə (korrelyasiya) matrisi R — nüvə": ("Матрица связей (корреляции) R — ядро", "Relationship (correlation) matrix R — core"),
+    "Asılılıq dərəcəsi R²ⱼ (%)": ("Степень зависимости R²ⱼ (%)", "Degree of dependency R²ⱼ (%)"),
+    "R²ⱼ = 1 − 1/(R⁻¹)ⱼⱼ: meyarın informasiyasının digər meyarlarda artıq olan hissəsi. "
+    "Xətlər aşağı və yuxarı R üçün qiymətlərdir. R-in ən kiçik məxsusi ədədləri: {e}.":
+        ("R²ⱼ = 1 − 1/(R⁻¹)ⱼⱼ: доля информации критерия, уже содержащаяся в других критериях. "
+         "Отрезки — значения для нижней и верхней R. Наименьшие собственные значения R: {e}.",
+         "R²ⱼ = 1 − 1/(R⁻¹)ⱼⱼ: the share of the criterion's information already contained in the other criteria. "
+         "Whiskers are the values for the lower and upper R. Smallest eigenvalues of R: {e}."),
+    "Asılılığın sıralamaya təsiri": ("Влияние зависимости на ранжирование", "Effect of the dependency on the ranking"),
+    "D⁺ (müstəqil)": ("D⁺ (независимые)", "D⁺ (independent)"),
+    "D⁻ (müstəqil)": ("D⁻ (независимые)", "D⁻ (independent)"),
+    "CC (müstəqil)": ("CC (независимые)", "CC (independent)"),
+    "D⁺ (asılı)": ("D⁺ (зависимые)", "D⁺ (dependent)"),
+    "D⁻ (asılı)": ("D⁻ (зависимые)", "D⁻ (dependent)"),
+    "CC (asılı, {r})": ("CC (зависимые, {r})", "CC (dependent, {r})"),
+    "CC: müstəqil və asılı meyarlar": ("CC: независимые и зависимые критерии", "CC: independent and dependent criteria"),
+    "8 təpə üzrə, defuzzifikasiyasız (Antuchevičienė və b., 2010).": ("по 8 вершинам, без дефаззификации (Antuchevičienė и др., 2010).",
+                                                               "over the 8 vertices, no defuzzification (Antuchevičienė et al., 2010)."),
+    "Yoxlama: R = I olduqda adi IT2 TOPSIS ilə fərq {d}.": ("Проверка: при R = I отличие от обычного IT2 TOPSIS {d}.",
+                                                            "Check: for R = I the difference from the standard IT2 TOPSIS is {d}."),
+    "Asılılıq əlaqələri": ("Связи критериев", "Dependency relations"),
+    "Asılılıq R": ("Матрица R", "Dependency R"),
+    "Asılılıq R²": ("Зависимость R²", "Dependency R²"),
+    "Asılı TOPSIS": ("TOPSIS зависимый", "Dependent TOPSIS"),
     # ---------------------------------------------------------------- export tab
     "Bütün nəticələr": ("Все результаты", "All results"),
     "Bir Excel faylında bütün cədvəllər.": ("Все таблицы в одном файле Excel.", "All tables in one Excel file."),
