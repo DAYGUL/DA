@@ -23,6 +23,7 @@ from it2 import IT2, distance  # noqa: E402
 from pipeline import (crisp_as_it2, crisp_decision, crisp_pairwise, fix_lmf, nested_ok,  # noqa: E402
                       pairwise_pipeline, rank_reversal, sensitivity_curves, sensitivity_curves_crisp, topsis_full)
 from smaa import it2_smaa  # noqa: E402
+import dependency as dep_mod  # noqa: E402
 
 st.set_page_config(page_title="IT2 Fuzzy AHP · TOPSIS", page_icon="◆", layout="wide",
                    initial_sidebar_state="expanded")
@@ -380,7 +381,7 @@ st.markdown(
 kpi_box = st.container()
 
 tabs = st.tabs([t("Məlumat"), t("Konsistentlik"), t("Eigen və çəkilər"), "TOPSIS", t("Həssaslıq"), "IT2-SMAA",
-                "Rank reversal", t("İxrac"), t("Mənbələr")])
+                "Rank reversal", t("Asılılıq"), t("İxrac"), t("Mənbələr")])
 
 # ================================================================== 0. data
 with tabs[0]:
@@ -680,10 +681,10 @@ with tabs[2]:
                          width="stretch")
 
 # ================================================================== 3-6 TOPSIS etc.
-T, S = None, None
+T, S, DEP = None, None, None
 X_it2 = X
 if derr or len(alts) < 2:
-    for tb in tabs[3:7]:
+    for tb in tabs[3:8]:
         with tb:
             st.warning(t("Əvvəlcə **Məlumat** tabında qərar matrisini düzəldin (ən azı 2 alternativ)."))
 else:
@@ -849,6 +850,101 @@ else:
                                     (f"background-color:{C_BAD}33" if v_ is False else ""), subset=[t("Keçdi")]),
                      width="stretch", height=520)
 
+    # ---------------------------------------------------------- dependent criteria (Mahalanobis IT2 TOPSIS)
+    with tabs[7]:
+        section(t("Meyarlar arasındakı asılılıq"),
+                t("Hər meyar cütü üçün əlaqə dərəcəsi linqvistik verilir və korrelyasiya intervalına çevrilir. "
+                  "IT2 TOPSIS məsafəsi təpə-təpə Mahalanobis formasında hesablanır; R = I olduqda adi IT2 TOPSIS alınır."))
+        term_keys = list(dep_mod.TERMS)
+        term_lbl = {k: t(dep_mod.TERMS_AZ[k]) for k in term_keys}
+        lbl_term = {v_: k for k, v_ in term_lbl.items()}
+        sign_lbl = {+1: t("müsbət (+)"), -1: t("mənfi (−), qarşılıqlı əvəzləmə")}
+        lbl_sign = {v_: k for k, v_ in sign_lbl.items()}
+        rel0 = dep_mod.default_relations(crit)
+        ed0 = pd.DataFrame({t("Cüt"): [f"{a_}–{b_}" for a_, b_, _, _ in rel0],
+                            t("Əlaqə dərəcəsi"): [term_lbl[k] for _, _, k, _ in rel0],
+                            t("İstiqamət"): [sign_lbl[s_] for _, _, _, s_ in rel0]})
+        c1, c2 = st.columns([3, 2])
+        with c1:
+            st.markdown(f"**{t('Meyar cütləri arasındakı əlaqələr')}** · {t('redaktə oluna bilər')}")
+            ed = st.data_editor(
+                ed0, hide_index=True, width="stretch", height=min(35 * len(ed0) + 40, 600),
+                key=f"dep_editor_{LANG}_{'-'.join(crit)}", disabled=[t("Cüt")],
+                column_config={t("Əlaqə dərəcəsi"): st.column_config.SelectboxColumn(options=list(term_lbl.values()),
+                                                                                     required=True),
+                               t("İstiqamət"): st.column_config.SelectboxColumn(options=list(sign_lbl.values()),
+                                                                               required=True)})
+        rel = [(a_, b_, lbl_term.get(ed.iloc[k, 1], "None"), lbl_sign.get(ed.iloc[k, 2], 1))
+               for k, (a_, b_, _, _) in enumerate(rel0)]
+        with c2:
+            st.markdown(f"**{t('Linqvistik dərəcələr və korrelyasiya intervalları')}**")
+            st.dataframe(pd.DataFrame({t("Aşağı"): [v_[0] for v_ in dep_mod.TERMS.values()],
+                                       t("Nüvə"): [v_[1] for v_ in dep_mod.TERMS.values()],
+                                       t("Yuxarı"): [v_[2] for v_ in dep_mod.TERMS.values()]},
+                                      index=[term_lbl[k] for k in term_keys]), width="stretch")
+            st.caption(t("Normallaşdırmadan sonra bütün meyarlar \"böyük = yaxşı\" istiqamətindədir (xərc meyarında "
+                         "böyük = ucuz). Mənfi əlaqə qarşılıqlı əvəzləmə deməkdir: keyfiyyətli layihə adətən bahalıdır."))
+        DEP = dep_mod.analyse(T, crit, rel)
+        if not all(DEP["pd"].values()):
+            bad = [t(az_) for az_, lv in zip(("aşağı", "nüvə", "yuxarı"), dep_mod.LEVELS) if not DEP["pd"][lv]]
+            st.error(t("Əlaqə matrisi R müsbət müəyyən deyil ({b}). Əlaqələr bir-biri ilə uyğun gəlmir — "
+                       "bəzi dərəcələri zəiflədin.", b=", ".join(bad)))
+        if DEP["pd"]["core"]:
+            cc_i, cc_d = DEP["independent"]["CC"], DEP["CC"]["core"]
+            ord_i = [alts[k] for k in np.argsort(-cc_i)]
+            ord_d = [alts[k] for k in np.argsort(-cc_d)]
+            r2 = DEP["R2"]["core"]
+            same = ord_i == ord_d and all(
+                [alts[k] for k in np.argsort(-DEP["CC"][lv])] == ord_i for lv in dep_mod.LEVELS if DEP["pd"][lv])
+            gap_i = cc_i[alts.index(ord_d[0])] - cc_i[alts.index(ord_d[1])]
+            gap_d = cc_d[alts.index(ord_d[0])] - cc_d[alts.index(ord_d[1])]
+            kpi_row([(t("Müstəqil meyarlar"), " › ".join(ord_i), "R = I", ""),
+                     (t("Asılı meyarlar"), " › ".join(ord_d), t("nüvə R"), "acc"),
+                     (t("Sıralama"), t("dəyişmir") if same else t("dəyişir"), t("bütün intervallar üzrə"),
+                      "ok" if same else "bad"),
+                     (f"{ord_d[0]} − {ord_d[1]}", f"{gap_d:.3f}", t("müstəqil: {x}", x=f"{gap_i:.3f}"), "")])
+            c1, c2 = st.columns(2)
+            with c1:
+                fig = heatmap(DEP["R"]["core"], crit, t("Əlaqə (korrelyasiya) matrisi R — nüvə"), ".2f",
+                              scale="RdBu", zmin=-1, zmax=1)
+                chart(fig, "dep_R")
+            with c2:
+                lo = DEP["R2"].get("lower", r2)
+                hi = DEP["R2"].get("upper", r2)
+                fig = go.Figure(go.Bar(x=crit, y=r2 * 100, text=[f"{x:.0%}" for x in r2], textposition="inside",
+                                       marker_color=C_PRIMARY,
+                                       error_y=dict(type="data", symmetric=False, array=(hi - r2) * 100,
+                                                    arrayminus=(r2 - lo) * 100, color=C_MUTED)))
+                fig.update_layout(title=t("Asılılıq dərəcəsi R²ⱼ (%)"),
+                                  height=400, yaxis_title="%", yaxis_range=[0, 100])
+                chart(fig, "dep_R2")
+            st.caption(t("R²ⱼ = 1 − 1/(R⁻¹)ⱼⱼ: meyarın informasiyasının digər meyarlarda artıq olan hissəsi. "
+                         "Xətlər aşağı və yuxarı R üçün qiymətlərdir. R-in ən kiçik məxsusi ədədləri: {e}.",
+                         e=" / ".join(f"{DEP['eig'][lv].min():.3f}" for lv in dep_mod.LEVELS)))
+            section(t("Asılılığın sıralamaya təsiri"))
+            tab = pd.DataFrame({t("D⁺ (müstəqil)"): DEP["independent"]["dp"], t("D⁻ (müstəqil)"): DEP["independent"]["dm"],
+                                t("CC (müstəqil)"): cc_i, t("D⁺ (asılı)"): DEP["dp"]["core"],
+                                t("D⁻ (asılı)"): DEP["dm"]["core"]}, index=alts)
+            for lv, nm in zip(dep_mod.LEVELS, (t("aşağı R"), t("nüvə R"), t("yuxarı R"))):
+                if DEP["pd"][lv]:
+                    tab[t("CC (asılı, {r})", r=nm)] = DEP["CC"][lv]
+            c1, c2 = st.columns(2)
+            with c1:
+                fig = go.Figure([go.Bar(name=t("Müstəqil meyarlar"), x=alts, y=cc_i, marker_color=C_MUTED,
+                                        text=[f"{x:.3f}" for x in cc_i], textposition="outside"),
+                                 go.Bar(name=t("Asılı meyarlar"), x=alts, y=cc_d, marker_color=C_PRIMARY,
+                                        text=[f"{x:.3f}" for x in cc_d], textposition="outside")])
+                fig.update_layout(barmode="group", title=t("CC: müstəqil və asılı meyarlar"), height=400,
+                                  yaxis_range=[0, 1.05])
+                chart(fig, "dep_cc")
+            with c2:
+                st.dataframe(tab.round(4), width="stretch")
+                st.markdown(f"D⁺ᵢ = ( Σₖ cₖ eᵢₖᵀ R⁻¹ eᵢₖ )^½,  cₖ = h/4  ·  "
+                            + t("8 təpə üzrə, defuzzifikasiyasız (Antuchevičienė və b., 2010)."))
+                st.caption(t("Yoxlama: R = I olduqda adi IT2 TOPSIS ilə fərq {d}.", d=f"{DEP['check_identity']:.1e}"))
+            DEP["table"] = tab
+            DEP["rel_df"] = ed
+
 # ---------------------------------------------------------------- global KPI strip (top of page)
 with kpi_box:
     items = [(t("Konsistentlik"), f"CR_max {a['CR_max (8 təpə)']:.3f}",
@@ -862,8 +958,8 @@ with kpi_box:
         items.append((t("SMAA · P(1-ci yer)"), f"{S['acc'][alts.index(order[0]), 0]:.1%}", t("{a} üçün", a=order[0]), ""))
     kpi_row(items)
 
-# ================================================================== 7. export
-with tabs[7]:
+# ================================================================== 8. export
+with tabs[8]:
     section(t("Bütün nəticələr"), t("Bir Excel faylında bütün cədvəllər."))
     summ = lambda d: {t(k): v_ for k, v_ in d.items() if k != "per_vertex"}
     curve_x = P["curve"].set_index("t").rename(columns={"Ekspertdən orta məsafə": t("Ekspertdən orta məsafə")})
@@ -891,6 +987,11 @@ with tabs[7]:
         sheets[t("SMAA sıra ehtimalı")] = pd.DataFrame(S["acc"], index=alts, columns=[f"{k + 1}" for k in range(len(alts))])
         sheets[t("SMAA cüt üstünlük")] = pd.DataFrame(S["win"], index=alts, columns=alts)
         sheets[t("SMAA meyar sırası")] = pd.DataFrame(S["wacc"], index=crit, columns=[f"{k + 1}" for k in range(n)])
+    if DEP is not None and "table" in DEP:
+        sheets[t("Asılılıq əlaqələri")] = DEP["rel_df"].set_index(DEP["rel_df"].columns[0])
+        sheets[t("Asılılıq R")] = pd.DataFrame(DEP["R"]["core"], index=crit, columns=crit)
+        sheets[t("Asılılıq R²")] = pd.DataFrame({lv: DEP["R2"][lv] for lv in DEP["R2"]}, index=crit)
+        sheets[t("Asılı TOPSIS")] = DEP["table"]
     st.download_button("⬇  " + t("Bütün nəticələr (Excel)"), to_excel(sheets), "IT2_AHP_TOPSIS_results.xlsx",
                        width="stretch", type="primary")
     section(t("Daxil edilmiş məlumat"), t("Yenidən yükləmək üçün."))
@@ -903,8 +1004,8 @@ with tabs[7]:
     c2.download_button("⬇  " + t("Cüt-cüt matris (CSV)"), to_text(pw_t, ";"), "pairwise.csv", width="stretch")
     c3.download_button("⬇  " + t("Qərar matrisi (CSV)"), to_text(dm_t, ";"), "decision.csv", width="stretch")
 
-# ================================================================== 8. sources
-with tabs[8]:
+# ================================================================== 9. sources
+with tabs[9]:
     import references as refs_mod
     section(t("Düsturların mənbələri"),
             t("Proqramdakı hər düsturun hansı mənbədən götürüldüyü. [n] dissertasiyanın ədəbiyyat siyahısındakı nömrədir."))
